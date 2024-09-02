@@ -14,32 +14,59 @@
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
+            text-align: center;
         }
         canvas {
             border: 2px solid #333;
             background-color: #fff;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            max-width: 100%;
+            height: auto;
         }
         .controls {
             margin-top: 20px;
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
         }
         .controls button {
             padding: 10px 20px;
             font-size: 16px;
-            margin: 0 10px;
+            margin: 5px;
             cursor: pointer;
+            width: 100%;
+            max-width: 200px;
+            box-sizing: border-box; /* Đảm bảo padding và border không làm thay đổi kích thước tổng thể của nút */
+            transition: background-color 0.3s, transform 0.2s; /* Thêm hiệu ứng chuyển tiếp cho các trạng thái */
+        }
+        .controls button:active {
+            transform: scale(0.98); /* Hiệu ứng nhấn nút */
         }
         .text {
             display: none; /* Ẩn văn bản ban đầu */
             margin-top: 20px;
-            font-size: 30px;
+            font-size: 18px;
             color: red;
+            line-height: 1.4;
+            word-wrap: break-word;
+            padding: 0 10px;
         }
         audio {
             margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
         }
 
+        @media (max-width: 600px) {
+            .controls button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+            .text {
+                font-size: 16px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -95,7 +122,6 @@
                 }
             }, 50);
         }
-
 
         function drawStar() {
             const cx = canvas.width / 2;
