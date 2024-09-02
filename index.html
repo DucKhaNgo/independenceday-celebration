@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vẽ Cờ Việt Nam</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            border: 2px solid #333;
+            background-color: #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .controls button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+        .text {
+            display: none; /* Ẩn văn bản ban đầu */
+            margin-top: 20px;
+            font-size: 30px;
+            color: red;
+        }
+        audio {
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="flagCanvas" width="600" height="400"></canvas>
+
+    <div class="controls">
+        <button id="drawButton">Bắt đầu vẽ</button>
+        <button id="resetButton">Làm lại</button>
+        <div id="text" class="text">
+        </div>
+    </div>
+    
+
+    <audio style="display: none;" controls autoplay id="backgroundMusic">
+        <source src="./nhac.mp3" type="audio/mp3">
+        Trình duyệt của bạn không hỗ trợ thẻ audio.
+    </audio>
+    <script>
+        const canvas = document.getElementById('flagCanvas');
+        const ctx = canvas.getContext('2d');
+        const drawButton = document.getElementById('drawButton');
+        const resetButton = document.getElementById('resetButton');
+        const audio = document.getElementById('backgroundMusic');
+        const textElement = document.getElementById('text');
+
+        function drawFlag() {
+            let progress = 0;
+            const totalSteps = 100;
+            const interval = setInterval(() => {
+                progress++;
+
+                // Vẽ nền đỏ
+                ctx.fillStyle = '#da251d';
+                ctx.fillRect(0, 0, (canvas.width * progress) / totalSteps, canvas.height);
+
+                // Vẽ ngôi sao khi nền đã vẽ xong
+                if (progress === totalSteps) {
+                    drawStar();
+                    clearInterval(interval);
+                }
+            }, 20);
+        }
+        function showText() {
+            const text = "Chúc mừng 79 năm Quốc khánh nước Cộng hòa xã hội chủ nghĩa Việt Nam (2/9/1945 – 2/9/2024)";
+            let index = 0;
+            textElement.style.display = 'flex'; // Hiển thị văn bản
+            const interval = setInterval(() => {
+                textElement.textContent = text.substring(0, index);
+                index++;
+                if (index > text.length) {
+                    clearInterval(interval);
+                }
+            }, 50);
+        }
+
+
+        function drawStar() {
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const outerRadius = 80;
+            const innerRadius = outerRadius / 2.618; // Tỷ lệ vàng
+            const totalSteps = 50;
+            let step = 0;
+            let progress = 0;
+
+            function drawStep() {
+                if (step <= totalSteps) {
+                    ctx.fillStyle = '#ff0';
+                    ctx.beginPath();
+                    for (let i = 0; i < 5; i++) {
+                        let angle = i * 2 * Math.PI / 5 - Math.PI / 2;
+                        let x = cx + Math.cos(angle) * outerRadius * (step / totalSteps);
+                        let y = cy + Math.sin(angle) * outerRadius * (step / totalSteps);
+                        ctx.lineTo(x, y);
+                        angle += Math.PI / 5;
+                        x = cx + Math.cos(angle) * innerRadius * (step / totalSteps);
+                        y = cy + Math.sin(angle) * innerRadius * (step / totalSteps);
+                        ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                    step++;
+                    requestAnimationFrame(drawStep);
+                }
+            }
+
+            drawStep();
+        }
+
+        drawButton.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            audio.currentTime = 55; // Thay đổi giá trị để bắt đầu từ giây thứ 55
+            audio.play();
+            drawFlag();
+            showText();
+        });
+
+        resetButton.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            audio.pause();
+            audio.currentTime = 0;
+            textElement.style.display = 'none'; // Ẩn văn bản khi làm lại
+        });
+    </script>
+
+</body>
+</html>
